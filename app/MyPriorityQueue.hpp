@@ -145,66 +145,30 @@ void MyPriorityQueue<Object>::percolateUp(int index)
 	}
 }
 
-//template<typename Object>
-//void MyPriorityQueue<Object>::percolateDown(int index)
-//{
-//	if(isEmpty()) return;
-//	int childIndex = getLeftIndex(index);
-//	Object val = minHeap.at(index);
-//	while(childIndex < minHeap.size())
-//	{
-//		Object minVal = val;
-//		int minIndex = -1;
-//		for(int i = 0; i < 2 && i + childIndex < minHeap.size(); ++i)
-//		{
-//			if(minHeap.at(i + childIndex) < minVal)
-//			{
-//				minVal = minHeap.at(i + childIndex);
-//				minIndex = i + childIndex;
-//			}
-//		}
-//		if(!(minVal < val) && !(val < minVal))
-//		{
-//			return;
-//		}
-//		else 
-//		{
-//			std::swap(minHeap.at(index), minHeap.at(minIndex));
-//			index = minIndex;
-//			childIndex = getLeftIndex(childIndex);
-//		}
-//	}
-//}
-
 template<typename Object>
 void MyPriorityQueue<Object>::percolateDown(int index)
 {
 	int minIndex = -1;
-	int lChildIndex = index * 2+1;
-	int rChildIndex = (index * 2) + 2;
+	int leftIndex = index * 2+1;
+	int rightIndex = (index * 2) + 2;
 	
-	if (lChildIndex < minHeap.size())
+	if(leftIndex < minHeap.size())
+	{
+		if (minHeap[leftIndex]< minHeap[index] )
 		{
-			if (minHeap[lChildIndex]< minHeap[index] )
-				{
-					minIndex = lChildIndex;
-				}
+			minIndex = leftIndex;
 		}
-	
-	if (rChildIndex < minHeap.size())
+	}
+	if(rightIndex < minHeap.size())
+	{
+		if(minHeap[rightIndex] < minHeap[(minIndex == -1 ? index : minIndex)] )
 		{
-			if (minHeap[rChildIndex] < minHeap[(minIndex == -1 ? index : minIndex)] )
-				{
-					minIndex = rChildIndex;
-				}
+			minIndex = rightIndex;
 		}
-	
-	if (minIndex == -1)
-		return;
-	
+	}
+	if(minIndex == -1) return;
 	std::swap(minHeap[index], minHeap[minIndex]);
 	percolateDown(minIndex);
-
 }
 
 #endif 
