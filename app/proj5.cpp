@@ -31,7 +31,6 @@ std::vector< std::string > convert(const std::string & s1, const std::string & s
 	pq.insert(Distance(s1, distance1, distance2));
 	while(!pq.isEmpty())
 	{
-		size_t pqSize = pq.size();
 		Distance previous = pq.min();
 		distance1 = previous.distance1 + 1;
 		pq.extractMin();
