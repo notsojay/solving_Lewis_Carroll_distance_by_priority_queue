@@ -26,52 +26,48 @@ std::vector< std::string > convert(const std::string & s1, const std::string & s
 	if(s1 == std::string() || s2 == std::string() || s1 == s2 || s1.size() != s2.size()) return {};
 	std::vector<std::string> ret;
 	std::unordered_map<std::string, std::string> paths;
-	//std::unordered_set<std::string> visited;
 	MyPriorityQueue<Distance> pq;
-	int distance1 = 0;
-	pq.insert(Distance(s1, distance1));
+	int distance1 = 0, distance2 = 0;
+	pq.insert(Distance(s1, distance1, distance2));
 	while(!pq.isEmpty())
 	{
 		size_t pqSize = pq.size();
-		for(size_t i = 0; i < pqSize; ++i)
+		Distance previous = pq.min();
+		distance1 = previous.distance1 + 1;
+		pq.extractMin();
+		for(size_t j = 0; j < previous.str.size(); ++j)
 		{
-			Distance current = pq.min();
-			distance1 = current.distance1 + 1;
-			pq.extractMin();
-			for(size_t j = 0; j < current.str.size(); ++j)
+			std::string currentStr = previous.str;
+			for(char k = 'a'; k <= 'z'; ++k)
 			{
-				std::string currentStr = current.str;
-				for(char k = 'a'; k <= 'z'; ++k)
+				currentStr[j] = k;
+				if(currentStr == previous.str)
 				{
-					currentStr[j] = k;
-					if(currentStr == current.str)
+					continue;
+				}
+				if(currentStr == s2)
+				{
+					paths[s2] = previous.str;
+					getPath(paths, ret, s2, distance1);
+					return ret;
+				}
+				if(words.count(currentStr) && paths.find(currentStr) == paths.end())
+				{
+					paths[currentStr] = previous.str;
+					distance2 = 0;
+					for(size_t p = 0; p < s2.size(); ++p)
 					{
-						continue;
-					}
-					if(currentStr == s2)
-					{
-						paths[s2] = current.str;
-						getPath(paths, ret, s2, distance1);
-						return ret;
-					}
-					if(words.count(currentStr) && paths.find(currentStr) == paths.end())
-					{
-						paths[currentStr] = current.str;
-						int distance2 = 0;
-						for(size_t p = 0; p < s2.size(); ++p)
+						if(currentStr[p] != s2[p])
 						{
-							if(currentStr[p] != s2[p])
-							{
-								++distance2;
-							}
+							++distance2;
 						}
-						pq.insert(Distance(currentStr, distance1, distance2));
 					}
+					pq.insert(Distance(currentStr, distance1, distance2));
 				}
 			}
 		}
 	}
-	return {};  // stub obviously 
+	return {};
 }
 
 void getPath(const std::unordered_map<std::string, std::string> & paths, std::vector< std::string > & ret, const std::string & s2, const int & distance)
