@@ -28,6 +28,13 @@ std::vector< std::string > convert(const std::string & s1, const std::string & s
 	std::unordered_map<std::string, std::string> paths;
 	MyPriorityQueue<Distance> pq;
 	int distance1 = 0, distance2 = 0;
+	for(size_t p = 0; p < s2.size(); ++p)
+		{
+			if(s1[p] != s2[p])
+				{
+					++distance2;
+				}
+		}
 	pq.insert(Distance(s1, distance1, distance2));
 	while(!pq.isEmpty())
 	{
@@ -40,6 +47,7 @@ std::vector< std::string > convert(const std::string & s1, const std::string & s
 			for(char k = 'a'; k <= 'z'; ++k)
 			{
 				currentStr[j] = k;
+				//if(currentStr == "heaters") std::cout << "heaters: " << distance1 << "\n\n";
 				if(currentStr == previous.str)
 				{
 					continue;
@@ -61,13 +69,22 @@ std::vector< std::string > convert(const std::string & s1, const std::string & s
 							++distance2;
 						}
 					}
+//					if(currentStr == "clutter")
+//						{
+//							std::cout << previous.str << ": " << previous.distance1 << " " << previous.distance2 << " " << previous.distance1+previous.distance2 << " AND " << "clutter: " << distance1 << " " << distance2 << " " << distance1+distance2 << '\n';
+//						}
 					pq.insert(Distance(currentStr, distance1, distance2));
+
+//					std::cout << previous.str << ": " << previous.distance1 << " " << previous.distance2 << " " << previous.distance1+previous.distance2 << "\n";
+//					std::cout << currentStr << ": " << distance1 << " " << distance2 << " " << distance1+distance2 << "\n";
 				}
 			}
 		}
 	}
-	return {};
+	return {};  // stub obviously 
 }
+
+
 
 void getPath(const std::unordered_map<std::string, std::string> & paths, std::vector< std::string > & ret, const std::string & s2, const int & distance)
 {
@@ -76,6 +93,15 @@ void getPath(const std::unordered_map<std::string, std::string> & paths, std::ve
 	for(int i = distance-1; i >= 0; --i)
 	{
 		ret[i] = paths.find(ret[i+1])->second;
+		int distance2 = 0;
+		for(size_t p = 0; p < s2.size(); ++p)
+			{
+				if(ret[i][p] != s2[p])
+					{
+						++distance2;
+					}
+			}
+		std::cout << ret[i] << " " << i << " " << distance2 << " " << i + distance2<<"\n";
 	}
 
 }

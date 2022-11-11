@@ -21,7 +21,7 @@ struct Distance
 	}
 	bool operator<(const Distance & other) const
 	{
-		return this->distance1+this->distance2 < other.distance1+other.distance2;
+		return this->distance1  < other.distance1 ;
 	}
 };
 

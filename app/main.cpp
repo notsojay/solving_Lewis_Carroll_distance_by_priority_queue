@@ -7,8 +7,8 @@
 
 int main()
 {
-	std::string WORD_ONE = "banking";
-	std::string WORD_TWO = "brewing";
+	std::string WORD_ONE = "changes";
+	std::string WORD_TWO = "smashed";
 	std::unordered_set<std::string> words;
 	std::ifstream in("words.txt");
 	loadWordsIntoTable(words, in);
