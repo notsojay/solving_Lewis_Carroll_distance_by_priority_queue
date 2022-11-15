@@ -43,13 +43,6 @@ public:
 	
 	void extractMin(); 
 	
-	void print()
-	{
-		for(auto &i : minHeap)
-			std::cout << i.str << "  ";
-		std::cout << "\n\n";
-	}
-	
 private:
 	int getParentIndex(const int & currIndex) const;
 	

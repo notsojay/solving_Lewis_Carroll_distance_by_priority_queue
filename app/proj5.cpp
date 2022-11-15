@@ -33,11 +33,12 @@ std::vector< std::string > convert(const std::string & s1, const std::string & s
 	while(!pq.isEmpty())
 	{
 		Distance previous = pq.min();
+		int prevDistance = previous.distance1+1;
 		pq.extractMin();
 		for(size_t j = 0; j < previous.str.size(); ++j)
 		{
 			std::string currentStr = previous.str;
-			for(char k = 'a'; k <= 'z'; ++k)
+			for(char k = 'a'; k < 'z' + 1; ++k)
 			{
 				currentStr[j] = k;
 				if(currentStr == previous.str)
@@ -46,7 +47,7 @@ std::vector< std::string > convert(const std::string & s1, const std::string & s
 				}
 				if(currentStr == s2)
 				{
-					paths[s2] = std::make_pair(previous.str, previous.distance1+1);
+					paths[s2] = std::make_pair(previous.str, prevDistance);
 					getPath(paths, ret, s2, s1);
 					return ret;
 				}
@@ -54,16 +55,15 @@ std::vector< std::string > convert(const std::string & s1, const std::string & s
 				{
 					if(!visited.count(currentStr))
 					{
-						paths[currentStr] = std::make_pair(previous.str, previous.distance1+1);
-						//std::cout << previous.str << " " << currentStr << '\n';
+						paths[currentStr] = std::make_pair(previous.str, prevDistance);
 						visited.insert(currentStr);
-						pq.insert(Distance(currentStr, previous.distance1+1, estimateDistanceToend(currentStr, s2)));
+						pq.insert(Distance(currentStr, prevDistance, estimateDistanceToend(currentStr, s2)));
 					}
 					else
 					{
-						if(previous.distance1+1 < paths[currentStr].second)
+						if(prevDistance < paths[currentStr].second)
 						{
-							paths[currentStr] = std::make_pair(previous.str, previous.distance1+1);
+							paths[currentStr] = std::make_pair(previous.str, prevDistance);
 						}
 					}
 				}
