@@ -161,12 +161,12 @@ void MyPriorityQueue<Object>::percolateDown(int index)
 	}
 	if(rightIndex < minHeap.size())
 	{
-		if(minHeap[rightIndex] < minHeap[(minIndex == -1 ? index : minIndex)] )
+		if(minHeap[rightIndex] < minHeap[(minIndex < 0 ? index : minIndex)] )
 		{
 			minIndex = rightIndex;
 		}
 	}
-	if(minIndex == -1) return;
+	if(minIndex < 0) return;
 	std::swap(minHeap[index], minHeap[minIndex]);
 	percolateDown(minIndex);
 }

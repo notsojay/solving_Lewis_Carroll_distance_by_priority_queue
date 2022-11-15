@@ -19,20 +19,20 @@ void loadWordsIntoTable(std::unordered_set<std::string> & words, std::istream & 
 }
 
 
-
 // You probably want to change this function.
 std::vector< std::string > convert(const std::string & s1, const std::string & s2, const std::unordered_set<std::string> & words)
 {
 	if(s1 == std::string() || s2 == std::string() || s1 == s2 || s1.size() != s2.size()) return {};
 	std::vector<std::string> ret;
-	std::unordered_map<std::string, std::string> paths;
+	std::unordered_map<std::string, std::pair<std::string, int>> paths;
+	std::unordered_set<std::string> visited;
 	MyPriorityQueue<Distance> pq;
-	int distance1 = 0, distance2 = 0;
-	pq.insert(Distance(s1, distance1, distance2));
+	
+	pq.insert(Distance(s1, 0, estimateDistanceToend(s1, s2)));
+	visited.insert(s1);
 	while(!pq.isEmpty())
 	{
 		Distance previous = pq.min();
-		distance1 = previous.distance1 + 1;
 		pq.extractMin();
 		for(size_t j = 0; j < previous.str.size(); ++j)
 		{
@@ -46,22 +46,26 @@ std::vector< std::string > convert(const std::string & s1, const std::string & s
 				}
 				if(currentStr == s2)
 				{
-					paths[s2] = previous.str;
-					getPath(paths, ret, s2, distance1);
+					paths[s2] = std::make_pair(previous.str, previous.distance1+1);
+					getPath(paths, ret, s2, s1);
 					return ret;
 				}
-				if(words.count(currentStr) && paths.find(currentStr) == paths.end())
+				if(words.count(currentStr))
 				{
-					paths[currentStr] = previous.str;
-					distance2 = 0;
-					for(size_t p = 0; p < s2.size(); ++p)
+					if(!visited.count(currentStr))
 					{
-						if(currentStr[p] != s2[p])
+						paths[currentStr] = std::make_pair(previous.str, previous.distance1+1);
+						//std::cout << previous.str << " " << currentStr << '\n';
+						visited.insert(currentStr);
+						pq.insert(Distance(currentStr, previous.distance1+1, estimateDistanceToend(currentStr, s2)));
+					}
+					else
+					{
+						if(previous.distance1+1 < paths[currentStr].second)
 						{
-							++distance2;
+							paths[currentStr] = std::make_pair(previous.str, previous.distance1+1);
 						}
 					}
-					pq.insert(Distance(currentStr, distance1, distance2));
 				}
 			}
 		}
@@ -71,12 +75,26 @@ std::vector< std::string > convert(const std::string & s1, const std::string & s
 
 
 
-void getPath(const std::unordered_map<std::string, std::string> & paths, std::vector< std::string > & ret, const std::string & s2, const int & distance)
+void getPath(std::unordered_map<std::string, std::pair<std::string, int>>  paths, std::vector< std::string > & ret, std::string  s2, std::string  s1)
 {
-	ret.resize(distance+1, "");
-	ret[distance] = s2;
-	for(int i = distance-1; i >= 0; --i)
+	std::string pos = s2;
+	while(pos != s1)
 	{
-		ret[i] = paths.find(ret[i+1])->second;
+		ret.insert(std::begin(ret), pos);
+		pos = paths[pos].first;
 	}
+	ret.insert(std::begin(ret), pos);
+}
+
+int estimateDistanceToend(const std::string & currentStr, const std::string & s2)
+{
+	int count = 0;
+	for(size_t p = 0; p < s2.size(); ++p)
+	{
+		if(currentStr[p] != s2[p])
+		{
+			++count;
+		}
+	}
+	return count;
 }

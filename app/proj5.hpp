@@ -7,7 +7,6 @@
 #include <string>
 #include <sstream>
 
-
 #include "MyPriorityQueue.hpp"
 
 struct Distance
@@ -21,7 +20,7 @@ struct Distance
 	}
 	bool operator<(const Distance & other) const
 	{
-		return this->distance1  < other.distance1 ;
+		return this->distance1 + this->distance2 < other.distance1 + other.distance2;
 	}
 };
 
@@ -30,8 +29,8 @@ void loadWordsIntoTable(std::unordered_set<std::string> & words, std::istream & 
 
 std::vector< std::string > convert(const std::string & s1, const std::string & s2, const std::unordered_set<std::string> & words);
 
-void getPath(const std::unordered_map<std::string, std::string> & paths, std::vector< std::string > & ret, const std::string & s2, const int & distance);
+void getPath(std::unordered_map<std::string, std::pair<std::string, int>>  paths, std::vector< std::string > & ret, std::string  s2, std::string s1);
 
-
+int estimateDistanceToend(const std::string & currentStr, const std::string & s2);
 
 #endif 
